@@ -30,6 +30,9 @@
             --f-body: 'Manrope', sans-serif;
             
             --ease-lux: cubic-bezier(0.25, 1, 0.5, 1);
+            
+            /* Ширина "карточки" сайта */
+            --app-width: 440px; 
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
@@ -37,15 +40,15 @@
         html { scroll-behavior: smooth; }
         
         body {
-            background-color: var(--c-void);
+            background-color: var(--c-forest); /* Темный фон за пределами карточки */
             color: var(--c-forest);
             font-family: var(--f-body);
             display: flex; justify-content: center;
             min-height: 100vh;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Скрываем горизонтальный скролл */
         }
 
-        /* === ATMOSPHERE === */
+        /* === ATMOSPHERE LAYERS === */
         .noise-overlay {
             position: fixed; inset: 0;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
@@ -53,23 +56,27 @@
             mix-blend-mode: overlay;
         }
 
+        /* Размытый фон на фоне (только для компа видно по бокам) */
         .ambient-bg {
             position: fixed; inset: 0;
             background-image: url('hero_nature.png');
             background-size: cover; background-position: center;
-            filter: blur(50px) brightness(0.35) saturate(1.1);
+            filter: blur(40px) brightness(0.5);
             transform: scale(1.1);
             z-index: -1;
         }
 
-        /* === APP SHELL === */
+        /* === APP SHELL (ЦЕНТРАЛЬНЫЙ БЛОК) === */
         .app {
-            width: 100%; max-width: 440px; /* Mobile limitation on desktop */
+            width: 100%; 
+            max-width: var(--app-width); /* ЖЕСТКИЙ ЛИМИТ ШИРИНЫ */
             background-color: var(--c-white);
             position: relative;
-            box-shadow: 0 0 120px rgba(0,0,0,0.6);
+            /* Тень, чтобы карточка выделялась на фоне */
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
             min-height: 100vh;
-            overflow: hidden; /* Prevents overflow */
+            overflow: hidden;
+            margin: 0 auto; /* Центрирование */
         }
 
         /* === ANIMATIONS === */
@@ -91,7 +98,7 @@
 
 
         /* ========================
-           1. HERO SECTION (MASTER FIX)
+           1. HERO SECTION
            ======================== */
         .hero {
             position: relative; height: 93vh;
@@ -102,7 +109,6 @@
             width: 100%; height: 100%;
             object-fit: cover; object-position: center;
             opacity: 0.98;
-            /* Убрал лишние фильтры для сохранения качества твоего фото */
             filter: brightness(0.95);
             transform: scale(1.05);
             transition: transform 10s ease;
@@ -136,33 +142,39 @@
         .stat-num { font-family: var(--f-disp); font-size: 2.4rem; line-height: 0.9; font-weight: 400; }
         .stat-lbl { font-family: var(--f-body); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.8; margin-top: 6px; }
 
-        /* === ГЛАВНЫЙ ЗАГОЛОВОК (100% FIX) === */
+        /* === ГЛАВНЫЙ ЗАГОЛОВОК (100% WORKING) === */
         .hero-title-wrap {
             position: absolute; 
-            /* Поднял на уровень груди (22%), чтобы уйти с джинсов */
-            bottom: 22%; 
+            bottom: 22%; /* Уровень груди/пиджака */
             left: 0; width: 100%;
             text-align: center; 
             z-index: 20; 
             padding: 0 10px;
-            pointer-events: none; /* Пропускает клики */
+            pointer-events: none;
         }
         
         .signature {
             font-family: var(--f-sign);
-            /* SMART RESIZE: 14vw = 14% от ширины экрана.
-               Это гарантирует, что надпись всегда поместится в ширину телефона,
-               но будет максимально большой.
-            */
-            font-size: 14vw; 
+            /* === SMART SIZING === */
+            /* На мобиле: 15% от ширины экрана.
+               На компе: ограничится медиа-запросом ниже */
+            font-size: 15vw; 
             color: #fff;
             line-height: 1; 
             transform: rotate(-6deg);
-            /* Мягкая тень */
             text-shadow: 0 5px 20px rgba(0,0,0,0.3);
             display: block; 
             margin-bottom: 5px; 
             width: 100%;
+        }
+
+        /* ФИКС ДЛЯ КОМПЬЮТЕРА:
+           Если экран шире, чем наша колонка (440px),
+           мы фиксируем размер шрифта, чтобы он не раздувался */
+        @media (min-width: 440px) {
+            .signature {
+                font-size: 4rem; /* Идеальный размер для колонки 440px */
+            }
         }
 
         .subtitle {
@@ -172,30 +184,9 @@
             letter-spacing: 0.3em;
             color: #fff; 
             font-weight: 600;
-            /* ЖЕСТКАЯ ТЕНЬ: Текст будет виден даже на белом */
             text-shadow: 0 2px 5px #000000;
             display: block;
             opacity: 0.95;
-        }
-
-        /* === НАСТРОЙКА ДЛЯ КОМПЬЮТЕРА === */
-        /* Если экран шире 500px, включаем "ПК режим" */
-        @media (min-width: 500px) {
-            .app { max-width: 100%; /* Разрешаем расширяться на весь экран */ }
-            
-            .signature {
-                font-size: 8rem; /* Фиксированный гигантский размер для ПК */
-            }
-            .hero-title-wrap {
-                bottom: 100px; /* Опускаем ниже, так как экран большой */
-            }
-            .subtitle {
-                font-size: 1.5rem; /* Увеличиваем подзаголовок */
-            }
-            
-            /* Ограничиваем контент в центре, чтобы не разъезжался */
-            .section, .footer { max-width: 800px; margin: 0 auto; }
-            .hero { height: 100vh; }
         }
 
 
@@ -220,7 +211,7 @@
 
 
         /* ========================
-           3. MY JOURNEY
+           3. REST OF CONTENT
            ======================== */
         .postcard-wrap { display: flex; justify-content: center; }
         .postcard {
@@ -257,12 +248,8 @@
         .edu-item:last-child { border-bottom: none; }
         .edu-icon { color: var(--c-gold); font-size: 0.7em; }
 
-
-        /* ========================
-           4. RESULTS SLIDER
-           ======================== */
+        /* SLIDER */
         .slider-bleed { margin-right: -25px; overflow: hidden; }
-        
         .slider {
             display: flex; gap: 20px;
             overflow-x: auto; padding-bottom: 40px; padding-right: 25px;
@@ -271,7 +258,6 @@
             scrollbar-width: none;
         }
         .slider::-webkit-scrollbar { display: none; }
-
         .slide-card {
             min-width: 290px; flex: 0 0 85%;
             scroll-snap-align: center;
@@ -280,9 +266,7 @@
             padding: 12px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.03);
         }
-        
         .score-img { width: 100%; display: block; border: 1px solid #f8f8f8; margin-bottom: 25px; }
-        
         .score-meta { text-align: center; padding-bottom: 10px; }
         .score-big { font-family: var(--f-disp); font-size: 3rem; font-weight: 400; line-height: 1; color: var(--c-forest); }
         .score-detail {
@@ -291,10 +275,7 @@
             letter-spacing: 0.2em; margin-top: 8px; font-weight: 600;
         }
 
-
-        /* ========================
-           5. PRODUCT
-           ======================== */
+        /* PRODUCT */
         .product-box {
             background: #fff; border: 1px solid #eee;
             padding: 70px 30px; text-align: center;
@@ -304,7 +285,6 @@
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
             background: var(--c-forest);
         }
-        
         .p-tag {
             display: inline-block; padding: 6px 18px;
             border: 1px solid #eee; border-radius: 50px;
@@ -320,7 +300,6 @@
             font-family: var(--f-body); font-size: 1rem; color: #555;
             line-height: 1.8; margin-bottom: 50px;
         }
-        
         .action-circle {
             width: 70px; height: 70px; border-radius: 50%;
             background: var(--c-forest); color: #fff;
@@ -331,19 +310,14 @@
         }
         .action-circle:hover { transform: scale(1.1) rotate(-90deg); }
 
-
-        /* ========================
-           6. FORM
-           ======================== */
+        /* FORM */
         .form-area { padding: 0 30px; }
         .form-h {
             font-family: var(--f-disp); font-size: 4.5rem; text-align: center;
             font-style: italic; color: var(--c-forest);
             margin-bottom: 70px; line-height: 1;
         }
-        
         .field { margin-bottom: 45px; position: relative; }
-        
         .input-el {
             width: 100%; padding: 20px 0;
             background: transparent; border: none;
@@ -357,7 +331,6 @@
             font-family: var(--f-body); text-transform: uppercase;
             font-size: 0.7rem; letter-spacing: 0.25em; color: #bbb;
         }
-
         .btn-main {
             width: 100%; padding: 30px;
             background: var(--c-forest); color: #fff;
@@ -369,10 +342,7 @@
         }
         .btn-main:hover { background: #000; }
 
-
-        /* ========================
-           7. FOOTER
-           ======================== */
+        /* FOOTER */
         .footer {
             background-color: var(--c-grey);
             padding: 80px 30px; text-align: center;
@@ -388,7 +358,6 @@
             background: var(--c-forest); transition: width 0.3s;
         }
         .soc-link:hover::after { width: 100%; }
-
         .credits {
             font-family: var(--f-disp); font-size: 0.95rem; color: #888;
             text-decoration: none; letter-spacing: 0.5px;
@@ -401,6 +370,7 @@
 
     <div class="noise-overlay"></div>
     <div class="loader"><div class="loader-text">Arujyanm</div></div>
+    
     <div class="ambient-bg"></div>
 
     <div class="app">
