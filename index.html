@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Arujyanm</title>
+    <link rel="icon" type="image/png" href="favicon.png?v=3">
+    <link rel="apple-touch-icon" href="favicon.png?v=3">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0E241B">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Allison&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    
+    <style>
+        /* === LUXURY VARIABLES === */
+        :root {
+            /* Palette: Deep Forest & Warm Paper */
+            --c-void: #050505;
+            --c-forest: #0E241B;   /* Dark Editorial Green */
+            --c-accent: #1B4533;   /* Lighter Green */
+            --c-gold: #BFA36F;     /* Muted Champagne Gold */
+            --c-paper: #F5F3ED;    /* Expensive Cream Paper */
+            --c-white: #FFFFFF;
+            --c-grey: #EBEBEB;     /* Footer Grey */
+            --c-line: rgba(0,0,0,0.06);
+            
+            --f-disp: 'Cormorant Garamond', serif;
+            --f-sign: 'Allison', cursive;
+            --f-body: 'Manrope', sans-serif;
+            
+            --ease-lux: cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        
+        html { scroll-behavior: smooth; }
+        
+        body {
+            background-color: var(--c-void);
+            color: var(--c-forest);
+            font-family: var(--f-body);
+            display: flex; justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* === ATMOSPHERE LAYERS === */
+        
+        /* 1. Grain Texture (Film Look) */
+        .noise-overlay {
+            position: fixed; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 9999;
+            mix-blend-mode: overlay;
+        }
+
+        /* 2. Ambient Blurred Background (Based on Hero) */
+        .ambient-bg {
+            position: fixed; inset: 0;
+            background-image: url('hero_nature.png');
+            background-size: cover; background-position: center;
+            filter: blur(50px) brightness(0.35) saturate(1.1);
+            transform: scale(1.1);
+            z-index: -1;
+        }
+
+        /* === APP SHELL === */
+        .app {
+            width: 100%; max-width: 440px;
+            background-color: var(--c-white);
+            position: relative;
+            box-shadow: 0 0 120px rgba(0,0,0,0.6);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* === ANIMATIONS === */
+        .reveal-up {
+            opacity: 0; transform: translateY(40px);
+            transition: all 1.2s var(--ease-lux);
+        }
+        .reveal-up.active { opacity: 1; transform: translateY(0); }
+
+        /* === LOADER === */
+        .loader {
+            position: fixed; inset: 0; background: var(--c-white); z-index: 10000;
+            display: flex; justify-content: center; align-items: center;
+            animation: fadeOut 0.8s ease-in-out 1s forwards; pointer-events: none;
+        }
+        .loader-text {
+            font-family: var(--f-sign); font-size: 4rem; color: var(--c-forest);
+            animation: breathe 1.5s infinite;
+        }
+        @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+        @keyframes breathe { 0%, 100% { opacity: 0.6; transform: scale(0.98); } 50% { opacity: 1; transform: scale(1); } }
+
+
+        /* ========================
+           1. HERO SECTION
+           ======================== */
+        .hero {
+            position: relative; height: 93vh;
+            background: #000; overflow: hidden;
+        }
+
+        .hero-img {
+            width: 100%; height: 100%;
+            object-fit: cover; object-position: center;
+            opacity: 0.95;
+            /* The "Sosomak" Filter: Contrast, slight warmth, deep blacks */
+            filter: contrast(1.1) brightness(0.92) saturate(0.95) sepia(0.05);
+            transform: scale(1.05);
+            transition: transform 10s ease;
+        }
+        .hero:hover .hero-img { transform: scale(1.0); }
+
+        /* Gradients for text readability */
+        .grad-top {
+            position: absolute; top: 0; left: 0; width: 100%; height: 35%;
+            background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 100%);
+            z-index: 2;
+        }
+        .grad-bot {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 55%;
+            background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, transparent 100%);
+            z-index: 2;
+        }
+
+        /* HEADER UI */
+        .top-ui {
+            position: absolute; top: 0; left: 0; width: 100%;
+            padding: 40px 30px;
+            display: flex; justify-content: space-between; align-items: flex-start;
+            z-index: 10; color: #fff;
+        }
+        .year {
+            font-family: var(--f-disp); font-size: 1.6rem;
+            font-style: italic; font-weight: 400; letter-spacing: 1px;
+        }
+        
+        .stats-col { text-align: right; display: flex; flex-direction: column; gap: 20px; }
+        .stat-group { display: flex; flex-direction: column; }
+        .stat-num {
+            font-family: var(--f-disp); font-size: 2.4rem;
+            line-height: 0.9; font-weight: 400;
+        }
+        .stat-lbl { 
+            font-family: var(--f-body); font-size: 0.65rem; 
+            text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.8; margin-top: 6px; 
+        }
+
+        /* MAIN TITLE */
+        .hero-title-wrap {
+            position: absolute; bottom: 80px; left: 0; width: 100%;
+            text-align: center; z-index: 10; padding: 0 10px;
+        }
+        .signature {
+            font-family: var(--f-sign);
+            font-size: 9rem; /* Massive size for elegance */
+            color: #fff;
+            line-height: 0.6;
+            transform: rotate(-6deg);
+            text-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            display: block; margin-bottom: 25px;
+        }
+        .subtitle {
+            font-family: var(--f-disp); font-size: 1.2rem;
+            text-transform: uppercase; letter-spacing: 0.3em;
+            color: rgba(255,255,255,0.9); font-weight: 400;
+        }
+
+
+        /* ========================
+           2. CONTENT UTILS
+           ======================== */
+        .section { padding: 90px 25px; border-bottom: 1px solid var(--c-line); }
+        .bg-paper { background-color: var(--c-paper); }
+        .bg-white { background-color: var(--c-white); }
+        
+        /* Typography System */
+        .sec-header { text-align: center; margin-bottom: 60px; }
+        .sec-sub {
+            font-family: var(--f-body); font-size: 0.7rem;
+            text-transform: uppercase; letter-spacing: 0.25em;
+            color: #888; margin-bottom: 20px; display: block;
+        }
+        .sec-title {
+            font-family: var(--f-disp); font-size: 3.8rem;
+            font-style: italic; font-weight: 400; color: var(--c-forest);
+            line-height: 1; letter-spacing: -0.02em;
+        }
+
+
+        /* ========================
+           3. MY JOURNEY (POSTCARD MASTERPIECE)
+           ======================== */
+        .postcard-wrap {
+            display: flex; justify-content: center;
+        }
+        /* The Card */
+        .postcard {
+            background: #fff;
+            padding: 15px 15px 60px 15px; /* Polaroid spacing */
+            box-shadow: 0 25px 60px rgba(0,0,0,0.06);
+            /* TILT LEFT AS REQUESTED */
+            transform: rotate(-3deg);
+            position: relative;
+            max-width: 340px; width: 100%;
+            border: 1px solid rgba(0,0,0,0.03);
+            transition: transform 0.6s var(--ease-lux);
+        }
+        .postcard:hover { transform: rotate(0deg) scale(1.02); z-index: 5; }
+
+        /* Realistic Tape */
+        .tape {
+            position: absolute; top: -20px; left: 50%;
+            transform: translateX(-50%) rotate(2deg);
+            width: 130px; height: 38px;
+            background: rgba(255,255,255,0.5); /* Semi-transparent */
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,255,255,0.4);
+            z-index: 10;
+        }
+        
+        .edu-pic {
+            width: 100%; display: block;
+            filter: saturate(0.95) contrast(1.05); /* Slight analog look */
+        }
+
+        /* Elegant List */
+        .edu-list {
+            margin-top: 50px; list-style: none; text-align: left; padding: 0 15px;
+        }
+        .edu-item {
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            font-family: var(--f-disp); font-size: 1.5rem; font-style: italic;
+            color: var(--c-forest); display: flex; align-items: center; gap: 15px;
+        }
+        .edu-item:last-child { border-bottom: none; }
+        .edu-icon { color: var(--c-gold); font-size: 0.7em; }
+
+
+        /* ========================
+           4. RESULTS SLIDER (NATIVE SCROLL)
+           ======================== */
+        /* Container that allows bleed to the right */
+        .slider-bleed {
+            margin-right: -25px; /* Pull right to edge of screen */
+            overflow: hidden;
+        }
+        
+        .slider {
+            display: flex; gap: 20px;
+            overflow-x: auto; /* Enable native horizontal scroll */
+            padding-bottom: 40px; /* Space for shadows */
+            padding-right: 25px; /* Padding for last item */
+            
+            /* CSS Snap for perfect alignment */
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            
+            /* Hide Scrollbar */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE */
+        }
+        .slider::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+        .slide-card {
+            min-width: 290px; flex: 0 0 85%; /* 85% width to show next slide peek */
+            scroll-snap-align: center;
+            background: #fff;
+            border: 1px solid #eee;
+            padding: 12px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.03);
+        }
+        
+        .score-img {
+            width: 100%; display: block;
+            border: 1px solid #f8f8f8; margin-bottom: 25px;
+        }
+        
+        .score-meta { text-align: center; padding-bottom: 10px; }
+        .score-big {
+            font-family: var(--f-disp); font-size: 3rem;
+            font-weight: 400; line-height: 1; color: var(--c-forest);
+        }
+        .score-detail {
+            font-family: var(--f-body); font-size: 0.75rem;
+            color: var(--c-gold); text-transform: uppercase;
+            letter-spacing: 0.2em; margin-top: 8px; font-weight: 600;
+        }
+
+
+        /* ========================
+           5. PRODUCT (INTENSIVE)
+           ======================== */
+        .product-box {
+            background: #fff; border: 1px solid #eee;
+            padding: 70px 30px; text-align: center;
+            position: relative; overflow: hidden;
+        }
+        /* Top Accent Line */
+        .product-box::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+            background: var(--c-forest);
+        }
+        
+        .p-tag {
+            display: inline-block; padding: 6px 18px;
+            border: 1px solid #eee; border-radius: 50px;
+            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em;
+            color: #999; margin-bottom: 35px;
+        }
+        .p-title {
+            font-family: var(--f-disp); font-size: 2.8rem;
+            font-style: italic; color: var(--c-forest);
+            line-height: 1.1; margin-bottom: 25px;
+        }
+        .p-desc {
+            font-family: var(--f-body); font-size: 1rem; color: #555;
+            line-height: 1.8; margin-bottom: 50px;
+        }
+        
+        .action-circle {
+            width: 70px; height: 70px; border-radius: 50%;
+            background: var(--c-forest); color: #fff;
+            display: inline-flex; justify-content: center; align-items: center;
+            font-size: 1.8rem; text-decoration: none;
+            transition: transform 0.4s var(--ease-lux);
+            box-shadow: 0 10px 30px rgba(14, 36, 27, 0.2);
+        }
+        .action-circle:hover { transform: scale(1.1) rotate(-90deg); }
+
+
+        /* ========================
+           6. FORM
+           ======================== */
+        .form-area { padding: 0 30px; }
+        .form-h {
+            font-family: var(--f-disp); font-size: 4.5rem; text-align: center;
+            font-style: italic; color: var(--c-forest);
+            margin-bottom: 70px; line-height: 1;
+        }
+        
+        .field { margin-bottom: 45px; position: relative; }
+        
+        .input-el {
+            width: 100%; padding: 20px 0;
+            background: transparent; border: none;
+            border-bottom: 1px solid #ccc;
+            font-family: var(--f-disp); font-size: 1.6rem;
+            color: var(--c-forest); border-radius: 0;
+            transition: all 0.3s;
+        }
+        .input-el:focus {
+            outline: none; border-bottom-color: var(--c-forest);
+            padding-left: 10px;
+        }
+        .input-el::placeholder {
+            font-family: var(--f-body); text-transform: uppercase;
+            font-size: 0.7rem; letter-spacing: 0.25em; color: #bbb;
+        }
+
+        .btn-main {
+            width: 100%; padding: 30px;
+            background: var(--c-forest); color: #fff;
+            border: none; font-family: var(--f-body);
+            font-size: 0.85rem; text-transform: uppercase;
+            letter-spacing: 0.3em; font-weight: 600;
+            cursor: pointer; margin-top: 30px;
+            transition: background 0.3s;
+        }
+        .btn-main:hover { background: #000; }
+
+
+        /* ========================
+           7. FOOTER
+           ======================== */
+        .footer {
+            background-color: var(--c-grey);
+            padding: 80px 30px; text-align: center;
+            border-top: 1px solid #ddd;
+        }
+        .socials {
+            display: flex; justify-content: center; gap: 40px; margin-bottom: 60px;
+        }
+        .soc-link {
+            font-family: var(--f-disp); font-size: 1.3rem;
+            color: var(--c-forest); text-decoration: none; position: relative;
+        }
+        .soc-link::after {
+            content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 1px;
+            background: var(--c-forest); transition: width 0.3s;
+        }
+        .soc-link:hover::after { width: 100%; }
+
+        .credits {
+            font-family: var(--f-disp); font-size: 0.95rem; color: #888;
+            text-decoration: none; letter-spacing: 0.5px;
+        }
+        .credits:hover { color: var(--c-forest); }
+
+    </style>
+</head>
+<body>
+
+    <div class="noise-overlay"></div>
+    <div class="loader"><div class="loader-text">Arujyanm</div></div>
+    <div class="ambient-bg"></div>
+
+    <div class="app">
+        
+        <section class="hero">
+            <div class="grad-top"></div>
+            <div class="grad-bot"></div>
+            <img src="hero_nature.png" alt="Editorial Cover" class="hero-img">
+
+            <div class="top-ui">
+                <div class="year">2026</div>
+                <div class="stats-col">
+                    <div class="stat-group reveal-up">
+                        <span class="stat-num">1480</span>
+                        <span class="stat-lbl">SAT (790 Math)</span>
+                    </div>
+                    <div class="stat-group reveal-up" style="transition-delay: 0.1s;">
+                        <span class="stat-num">A*A*B</span>
+                        <span class="stat-lbl">Rating</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-title-wrap reveal-up" style="transition-delay: 0.3s;">
+                <span class="signature">Arujyanm</span>
+                <span class="subtitle">Mathematics Tutor</span>
+            </div>
+        </section>
+
+        <section class="section bg-paper">
+            <div class="sec-header reveal-up">
+                <span class="sec-sub">About Me</span>
+                <h2 class="sec-title">My Journey</h2>
+            </div>
+
+            <div class="postcard-wrap reveal-up">
+                <div class="postcard">
+                    <div class="tape"></div>
+                    <img src="edu.jpg" alt="Education" class="edu-pic">
+                    
+                    <ul class="edu-list">
+                        <li class="edu-item"><span class="edu-icon">✦</span> NIS Petropavl Alumni’25</li>
+                        <li class="edu-item"><span class="edu-icon">✦</span> HKU’23 Summer Camp</li>
+                        <li class="edu-item"><span class="edu-icon">✦</span> HKBU’24 Summer Camp</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="section bg-white">
+            <div class="sec-header reveal-up">
+                <span class="sec-sub">Proven Results</span>
+                <h2 class="sec-title">Student Scores</h2>
+            </div>
+
+            <div class="slider-bleed reveal-up">
+                <div class="slider">
+                    <div class="slide-card">
+                        <img src="score1.png" alt="1330" class="score-img">
+                        <div class="score-meta">
+                            <div class="score-big">1330</div>
+                            <div class="score-detail">Math: 730</div>
+                        </div>
+                    </div>
+                    <div class="slide-card">
+                        <img src="score2.png" alt="1300" class="score-img">
+                        <div class="score-meta">
+                            <div class="score-big">1300</div>
+                            <div class="score-detail">Math: 750</div>
+                        </div>
+                    </div>
+                    <div class="slide-card">
+                        <img src="score3.png" alt="1380" class="score-img">
+                        <div class="score-meta">
+                            <div class="score-big">1380</div>
+                            <div class="score-detail">Math: 760</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section bg-paper">
+            <div class="product-box reveal-up">
+                <div class="p-tag">Bestseller</div>
+                <h3 class="p-title">Intensive: 12 Lessons</h3>
+                <p class="p-desc">
+                    Полный разбор тем 11-12 классов.<br>
+                    Интенсивная подготовка к экзаменам<br>в кратчайшие сроки.
+                </p>
+                <a href="#form" class="action-circle">↓</a>
+            </div>
+        </section>
+
+        <section class="section bg-white" id="form">
+            <h2 class="form-h reveal-up">Start Now</h2>
+            
+            <form action="https://formspree.io/f/mnjndzpj" method="POST" class="form-area reveal-up">
+                <div class="field">
+                    <input type="text" name="name" class="input-el" placeholder="Name" required>
+                </div>
+                <div class="field">
+                    <input type="text" name="contact" class="input-el" placeholder="Telegram / WhatsApp" required>
+                </div>
+                <div class="field">
+                    <select name="subject" class="input-el">
+                        <option value="" disabled selected>Select Subject</option>
+                        <option value="Intensive">Intensive Course</option>
+                        <option value="SAT">SAT Math</option>
+                        <option value="MESC">MESC Math/Phys</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn-main">Submit Application</button>
+            </form>
+        </section>
+
+        <footer class="footer">
+            <div class="socials">
+                <a href="https://t.me/bloggingaru" class="soc-link">Telegram</a>
+                <a href="https://instagram.com/arujyanm" class="soc-link">Instagram</a>
+                <a href="https://tiktok.com/@arujyanmk" class="soc-link">TikTok</a>
+            </div>
+            <a href="https://t.me/ZshHax" class="credits">Designed by ZshHax</a>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.reveal-up').forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>
