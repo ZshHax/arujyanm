@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Arujyanm</title>
+    <title>Arujyanm</title>
+    
     <link rel="icon" type="image/png" href="favicon.png?v=3">
     <link rel="apple-touch-icon" href="favicon.png?v=3">
     <link rel="manifest" href="manifest.json">
@@ -11,24 +12,21 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Allison&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
         /* === LUXURY VARIABLES === */
         :root {
-            /* Palette: Deep Forest & Warm Paper */
             --c-void: #050505;
-            --c-forest: #0E241B;   /* Dark Editorial Green */
-            --c-accent: #1B4533;   /* Lighter Green */
-            --c-gold: #BFA36F;     /* Muted Champagne Gold */
-            --c-paper: #F5F3ED;    /* Expensive Cream Paper */
+            --c-forest: #0E241B;
+            --c-gold: #BFA36F;
+            --c-paper: #F5F3ED;
             --c-white: #FFFFFF;
-            --c-grey: #EBEBEB;     /* Footer Grey */
+            --c-grey: #EBEBEB;
             --c-line: rgba(0,0,0,0.06);
             
             --f-disp: 'Cormorant Garamond', serif;
-            --f-sign: 'Allison', cursive;
+            --f-sign: 'Pinyon Script', cursive;
             --f-body: 'Manrope', sans-serif;
             
             --ease-lux: cubic-bezier(0.25, 1, 0.5, 1);
@@ -47,9 +45,7 @@
             overflow-x: hidden;
         }
 
-        /* === ATMOSPHERE LAYERS === */
-        
-        /* 1. Grain Texture (Film Look) */
+        /* === ATMOSPHERE === */
         .noise-overlay {
             position: fixed; inset: 0;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
@@ -57,7 +53,6 @@
             mix-blend-mode: overlay;
         }
 
-        /* 2. Ambient Blurred Background (Based on Hero) */
         .ambient-bg {
             position: fixed; inset: 0;
             background-image: url('hero_nature.png');
@@ -69,19 +64,16 @@
 
         /* === APP SHELL === */
         .app {
-            width: 100%; max-width: 440px;
+            width: 100%; max-width: 440px; /* Mobile limitation on desktop */
             background-color: var(--c-white);
             position: relative;
             box-shadow: 0 0 120px rgba(0,0,0,0.6);
             min-height: 100vh;
-            overflow: hidden;
+            overflow: hidden; /* Prevents overflow */
         }
 
         /* === ANIMATIONS === */
-        .reveal-up {
-            opacity: 0; transform: translateY(40px);
-            transition: all 1.2s var(--ease-lux);
-        }
+        .reveal-up { opacity: 0; transform: translateY(40px); transition: all 1.2s var(--ease-lux); }
         .reveal-up.active { opacity: 1; transform: translateY(0); }
 
         /* === LOADER === */
@@ -99,7 +91,7 @@
 
 
         /* ========================
-           1. HERO SECTION
+           1. HERO SECTION (MASTER FIX)
            ======================== */
         .hero {
             position: relative; height: 93vh;
@@ -109,15 +101,14 @@
         .hero-img {
             width: 100%; height: 100%;
             object-fit: cover; object-position: center;
-            opacity: 0.95;
-            /* The "Sosomak" Filter: Contrast, slight warmth, deep blacks */
-            filter: contrast(1.1) brightness(0.92) saturate(0.95) sepia(0.05);
+            opacity: 0.98;
+            /* Убрал лишние фильтры для сохранения качества твоего фото */
+            filter: brightness(0.95);
             transform: scale(1.05);
             transition: transform 10s ease;
         }
         .hero:hover .hero-img { transform: scale(1.0); }
 
-        /* Gradients for text readability */
         .grad-top {
             position: absolute; top: 0; left: 0; width: 100%; height: 35%;
             background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 100%);
@@ -129,7 +120,6 @@
             z-index: 2;
         }
 
-        /* HEADER UI */
         .top-ui {
             position: absolute; top: 0; left: 0; width: 100%;
             padding: 40px 30px;
@@ -143,33 +133,69 @@
         
         .stats-col { text-align: right; display: flex; flex-direction: column; gap: 20px; }
         .stat-group { display: flex; flex-direction: column; }
-        .stat-num {
-            font-family: var(--f-disp); font-size: 2.4rem;
-            line-height: 0.9; font-weight: 400;
-        }
-        .stat-lbl { 
-            font-family: var(--f-body); font-size: 0.65rem; 
-            text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.8; margin-top: 6px; 
-        }
+        .stat-num { font-family: var(--f-disp); font-size: 2.4rem; line-height: 0.9; font-weight: 400; }
+        .stat-lbl { font-family: var(--f-body); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.8; margin-top: 6px; }
 
-        /* MAIN TITLE */
+        /* === ГЛАВНЫЙ ЗАГОЛОВОК (100% FIX) === */
         .hero-title-wrap {
-            position: absolute; bottom: 80px; left: 0; width: 100%;
-            text-align: center; z-index: 10; padding: 0 10px;
+            position: absolute; 
+            /* Поднял на уровень груди (22%), чтобы уйти с джинсов */
+            bottom: 22%; 
+            left: 0; width: 100%;
+            text-align: center; 
+            z-index: 20; 
+            padding: 0 10px;
+            pointer-events: none; /* Пропускает клики */
         }
+        
         .signature {
             font-family: var(--f-sign);
-            font-size: 9rem; /* Massive size for elegance */
+            /* SMART RESIZE: 14vw = 14% от ширины экрана.
+               Это гарантирует, что надпись всегда поместится в ширину телефона,
+               но будет максимально большой.
+            */
+            font-size: 14vw; 
             color: #fff;
-            line-height: 0.6;
+            line-height: 1; 
             transform: rotate(-6deg);
-            text-shadow: 0 15px 40px rgba(0,0,0,0.5);
-            display: block; margin-bottom: 25px;
+            /* Мягкая тень */
+            text-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            display: block; 
+            margin-bottom: 5px; 
+            width: 100%;
         }
+
         .subtitle {
-            font-family: var(--f-disp); font-size: 1.2rem;
-            text-transform: uppercase; letter-spacing: 0.3em;
-            color: rgba(255,255,255,0.9); font-weight: 400;
+            font-family: var(--f-disp); 
+            font-size: 1rem; 
+            text-transform: uppercase; 
+            letter-spacing: 0.3em;
+            color: #fff; 
+            font-weight: 600;
+            /* ЖЕСТКАЯ ТЕНЬ: Текст будет виден даже на белом */
+            text-shadow: 0 2px 5px #000000;
+            display: block;
+            opacity: 0.95;
+        }
+
+        /* === НАСТРОЙКА ДЛЯ КОМПЬЮТЕРА === */
+        /* Если экран шире 500px, включаем "ПК режим" */
+        @media (min-width: 500px) {
+            .app { max-width: 100%; /* Разрешаем расширяться на весь экран */ }
+            
+            .signature {
+                font-size: 8rem; /* Фиксированный гигантский размер для ПК */
+            }
+            .hero-title-wrap {
+                bottom: 100px; /* Опускаем ниже, так как экран большой */
+            }
+            .subtitle {
+                font-size: 1.5rem; /* Увеличиваем подзаголовок */
+            }
+            
+            /* Ограничиваем контент в центре, чтобы не разъезжался */
+            .section, .footer { max-width: 800px; margin: 0 auto; }
+            .hero { height: 100vh; }
         }
 
 
@@ -180,7 +206,6 @@
         .bg-paper { background-color: var(--c-paper); }
         .bg-white { background-color: var(--c-white); }
         
-        /* Typography System */
         .sec-header { text-align: center; margin-bottom: 60px; }
         .sec-sub {
             font-family: var(--f-body); font-size: 0.7rem;
@@ -195,17 +220,13 @@
 
 
         /* ========================
-           3. MY JOURNEY (POSTCARD MASTERPIECE)
+           3. MY JOURNEY
            ======================== */
-        .postcard-wrap {
-            display: flex; justify-content: center;
-        }
-        /* The Card */
+        .postcard-wrap { display: flex; justify-content: center; }
         .postcard {
             background: #fff;
-            padding: 15px 15px 60px 15px; /* Polaroid spacing */
+            padding: 15px 15px 60px 15px;
             box-shadow: 0 25px 60px rgba(0,0,0,0.06);
-            /* TILT LEFT AS REQUESTED */
             transform: rotate(-3deg);
             position: relative;
             max-width: 340px; width: 100%;
@@ -214,30 +235,22 @@
         }
         .postcard:hover { transform: rotate(0deg) scale(1.02); z-index: 5; }
 
-        /* Realistic Tape */
         .tape {
             position: absolute; top: -20px; left: 50%;
             transform: translateX(-50%) rotate(2deg);
             width: 130px; height: 38px;
-            background: rgba(255,255,255,0.5); /* Semi-transparent */
+            background: rgba(255,255,255,0.5);
             backdrop-filter: blur(4px);
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             border: 1px solid rgba(255,255,255,0.4);
             z-index: 10;
         }
         
-        .edu-pic {
-            width: 100%; display: block;
-            filter: saturate(0.95) contrast(1.05); /* Slight analog look */
-        }
+        .edu-pic { width: 100%; display: block; filter: saturate(0.95) contrast(1.05); }
 
-        /* Elegant List */
-        .edu-list {
-            margin-top: 50px; list-style: none; text-align: left; padding: 0 15px;
-        }
+        .edu-list { margin-top: 50px; list-style: none; text-align: left; padding: 0 15px; }
         .edu-item {
-            padding: 14px 0;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 14px 0; border-bottom: 1px solid rgba(0,0,0,0.05);
             font-family: var(--f-disp); font-size: 1.5rem; font-style: italic;
             color: var(--c-forest); display: flex; align-items: center; gap: 15px;
         }
@@ -246,32 +259,21 @@
 
 
         /* ========================
-           4. RESULTS SLIDER (NATIVE SCROLL)
+           4. RESULTS SLIDER
            ======================== */
-        /* Container that allows bleed to the right */
-        .slider-bleed {
-            margin-right: -25px; /* Pull right to edge of screen */
-            overflow: hidden;
-        }
+        .slider-bleed { margin-right: -25px; overflow: hidden; }
         
         .slider {
             display: flex; gap: 20px;
-            overflow-x: auto; /* Enable native horizontal scroll */
-            padding-bottom: 40px; /* Space for shadows */
-            padding-right: 25px; /* Padding for last item */
-            
-            /* CSS Snap for perfect alignment */
+            overflow-x: auto; padding-bottom: 40px; padding-right: 25px;
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
-            
-            /* Hide Scrollbar */
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE */
+            scrollbar-width: none;
         }
-        .slider::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+        .slider::-webkit-scrollbar { display: none; }
 
         .slide-card {
-            min-width: 290px; flex: 0 0 85%; /* 85% width to show next slide peek */
+            min-width: 290px; flex: 0 0 85%;
             scroll-snap-align: center;
             background: #fff;
             border: 1px solid #eee;
@@ -279,16 +281,10 @@
             box-shadow: 0 15px 40px rgba(0,0,0,0.03);
         }
         
-        .score-img {
-            width: 100%; display: block;
-            border: 1px solid #f8f8f8; margin-bottom: 25px;
-        }
+        .score-img { width: 100%; display: block; border: 1px solid #f8f8f8; margin-bottom: 25px; }
         
         .score-meta { text-align: center; padding-bottom: 10px; }
-        .score-big {
-            font-family: var(--f-disp); font-size: 3rem;
-            font-weight: 400; line-height: 1; color: var(--c-forest);
-        }
+        .score-big { font-family: var(--f-disp); font-size: 3rem; font-weight: 400; line-height: 1; color: var(--c-forest); }
         .score-detail {
             font-family: var(--f-body); font-size: 0.75rem;
             color: var(--c-gold); text-transform: uppercase;
@@ -297,14 +293,13 @@
 
 
         /* ========================
-           5. PRODUCT (INTENSIVE)
+           5. PRODUCT
            ======================== */
         .product-box {
             background: #fff; border: 1px solid #eee;
             padding: 70px 30px; text-align: center;
             position: relative; overflow: hidden;
         }
-        /* Top Accent Line */
         .product-box::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
             background: var(--c-forest);
@@ -357,10 +352,7 @@
             color: var(--c-forest); border-radius: 0;
             transition: all 0.3s;
         }
-        .input-el:focus {
-            outline: none; border-bottom-color: var(--c-forest);
-            padding-left: 10px;
-        }
+        .input-el:focus { outline: none; border-bottom-color: var(--c-forest); padding-left: 10px; }
         .input-el::placeholder {
             font-family: var(--f-body); text-transform: uppercase;
             font-size: 0.7rem; letter-spacing: 0.25em; color: #bbb;
@@ -386,9 +378,7 @@
             padding: 80px 30px; text-align: center;
             border-top: 1px solid #ddd;
         }
-        .socials {
-            display: flex; justify-content: center; gap: 40px; margin-bottom: 60px;
-        }
+        .socials { display: flex; justify-content: center; gap: 40px; margin-bottom: 60px; }
         .soc-link {
             font-family: var(--f-disp); font-size: 1.3rem;
             color: var(--c-forest); text-decoration: none; position: relative;
